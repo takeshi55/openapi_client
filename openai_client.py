@@ -44,6 +44,7 @@ if __name__ == "__main__":
         history_file_path = os.path.join('history', args.history_file)
         with open(history_file_path, 'w', encoding='utf-8') as f:
             json.dump(history, f, ensure_ascii=False, indent=2)
+    print("To end the conversation, press Ctrl+C.")
 
     try:
         while True:
