@@ -58,8 +58,6 @@ def generate_text(prompt, model, history, params, history_file_path):
 
     if history_file_path:
         with open(history_file_path, 'w', encoding='utf-8') as f:
-            history.append({"role": "user", "content": prompt})
-            history.append({"role": "assistant", "content": generated_text})
             while num_tokens_from_messages(history, model) > 3048:
                 history.pop(0)
             json.dump(history, f, ensure_ascii=False, indent=2)
