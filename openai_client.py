@@ -39,6 +39,12 @@ if __name__ == "__main__":
         else:
             with open(history_file_path, 'w', encoding='utf-8') as f:
                 json.dump(history, f, ensure_ascii=False, indent=2)
+    else:
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        args.history_file = f"history_{timestamp}.json"
+        history_file_path = os.path.join('history', args.history_file)
+        with open(history_file_path, 'w', encoding='utf-8') as f:
+            json.dump(history, f, ensure_ascii=False, indent=2)
 
     generated_text = generate_text(args.prompt, args.model, history)
 
