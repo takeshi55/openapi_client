@@ -25,8 +25,7 @@ def generate_text(prompt, model, history):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default="gpt-3.5-turbo", help='The OpenAI model to use')
-    parser.add_argument('--prompt', required=True, help='The text prompt for the model')
-    parser.add_argument('--history_file', default=None, help='The file to store conversation history')
+    parser.add_argument('--history_file', default="my_history.json", help='The file to store conversation history')
     args = parser.parse_args()
 
     history = []
@@ -46,13 +45,18 @@ if __name__ == "__main__":
         with open(history_file_path, 'w', encoding='utf-8') as f:
             json.dump(history, f, ensure_ascii=False, indent=2)
 
-    generated_text = generate_text(args.prompt, args.model, history)
+    try:
+        while True:
+            prompt = input("You: ")
+            generated_text = generate_text(prompt, args.model, history)
 
-    print(generated_text)
+            print(f"Assistant: {generated_text}")
 
-    history.append({"role": "user", "content": args.prompt})
-    history.append({"role": "assistant", "content": generated_text})
+            history.append({"role": "user", "content": prompt})
+            history.append({"role": "assistant", "content": generated_text})
 
-    if args.history_file:
-        with open(history_file_path, 'w', encoding='utf-8') as f:
-            json.dump(history, f, ensure_ascii=False, indent=2)
+            if args.history_file:
+                with open(history_file_path, 'w', encoding='utf-8') as f:
+                    json.dump(history, f, ensure_ascii=False, indent=2)
+    except KeyboardInterrupt:
+        print("\nConversation ended by user.")
