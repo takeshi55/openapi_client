@@ -2,6 +2,7 @@ import os
 import json
 import argparse
 from datetime import datetime
+import openai
 from openai import ChatCompletion
 import tiktoken
 from tiktoken.core import Encoding
@@ -44,7 +45,7 @@ def generate_text(prompt, model, history, params, history_file_path):
 
     total_tokens = num_tokens_from_messages(messages, model)
     while total_tokens > 3048:
-        print(total_tokens)
+        print("Token limit detected! Delete history..." + str(total_tokens))
 
         messages.pop(0)
         total_tokens = num_tokens_from_messages(messages, model)
@@ -73,7 +74,7 @@ def main():
     parser.add_argument('--history_file', default=None, help='The file to store conversation history')
     args = parser.parse_args()
 
-    os.environ["OPENAI_API_KEY"] = "your_api_key_here"
+    openai.api_key = os.environ["OPENAI_API_KEY"]
 
     with open('config/params.json', 'r', encoding='utf-8') as f:
         params = json.load(f)
@@ -103,7 +104,6 @@ def main():
     try:
         while True:
             prompt = input("You: ")
-         #   generated_text = generate_text(prompt, args.model, history, params)
             generated_text = generate_text(prompt, args.model, history, params, history_file_path)
 
             print(f"Assistant: {generated_text}")
