@@ -1,1 +1,22 @@
-[{"role": "system", "content": "You are a helpful assistant."}, {"role": "assistant", "content": "The capital of France is Paris."}, {"role": "assistant", "content": "\u897f\u6771\u4eac\u5e02\u306f\u3001\u6771\u4eac\u90fd\u306e\u897f\u90e8\u306b\u4f4d\u7f6e\u3057\u3066\u3044\u307e\u3059\u3002"}]
+[
+  {
+    "role": "system",
+    "content": "You are a helpful assistant."
+  },
+  {
+    "role": "assistant",
+    "content": "The capital of France is Paris."
+  },
+  {
+    "role": "assistant",
+    "content": "西東京市は、東京都の西部に位置しています。"
+  },
+  {
+    "role": "user",
+    "content": "西東京市はどこにありますか?"
+  },
+  {
+    "role": "assistant",
+    "content": "西東京市は、東京都の西部に位置しています。具体的には、東京都23区の西側に隣接しています。"
+  }
+]
