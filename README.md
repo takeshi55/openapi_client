@@ -1,36 +1,29 @@
-# OpenAI API Client for GPT-3.5-turbo
+# 概要
 
-このレポジトリでは、OpenAI APIを使用してGPT-3.5-turboモデルと対話するためのPythonコマンドラインクライアントを提供しています。
+このスクリプトは、OpenAI APIを利用してGPT-3.5-turboモデルと対話するためのPythonプログラムです。
 
-## セットアップ
-
-必要なパッケージをインストールします。
+## 必要なパッケージ
 
 ```
-pip install openai
+openai
+json
+os
+argparse
+datetime
 ```
 
-以下の環境変数を設定します。
-
-```
-export OPENAI_API_KEY=your_openai_api_key
-```
+## インストール方法
+Python 3.x がインストールされていることを確認してください。
+pip install openai で openai パッケージをインストールします。
 
 ## 使い方
+OpenAI APIキーを環境変数に設定してください。例: export OPENAI_API_KEY=your_api_key
+python3 openai_client.py を実行してください。会話を終了する場合は、Ctrl + Cを押して強制終了します。
 
-コマンドライン引数を使用して、対話モデルに質問を投げることができます。
+### オプション
+--model: 使用するOpenAIモデルを指定します。デフォルトは "gpt-3.5-turbo" です。
+--history_file: 会話履歴を保存するファイル名を指定します。存在しない場合は新しく作成されます。指定しない場合は、自動的に一意のファイル名が生成されます。
 
-```
-python3 openai_client.py --model "gpt-3.5-turbo" --prompt "What is the capital of France?"
-```
-
-```
---model: 使用するモデル名。デフォルトは "gpt-3.5-turbo" です。
---prompt: モデルに投げるプロンプト（質問）。
---history_file: 履歴ファイルへのパス。ファイルが存在しない場合は新規作成されます。
-```
-
-## パラメータの設定
-
-config/params.json ファイルを編集して、APIリクエストのパラメータをカスタマイズできます。たとえば、temperature や max_tokens を変更できます。
-
+### 注意
+このスクリプトは、OpenAI APIの利用に関連する費用が発生する場合があります。詳細については、OpenAIの料金表をご確認ください。
+会話中に生成されるテキストは、GPT-3.5-turboモデルが生成したものであり、必ずしも正確ではないことに注意してください。

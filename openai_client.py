@@ -25,7 +25,7 @@ def generate_text(prompt, model, history):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default="gpt-3.5-turbo", help='The OpenAI model to use')
-    parser.add_argument('--history_file', default="my_history.json", help='The file to store conversation history')
+    parser.add_argument('--history_file', default=None, help='The file to store conversation history')
     args = parser.parse_args()
 
     history = []
