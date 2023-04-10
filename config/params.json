@@ -1,0 +1,6 @@
+{
+  "max_tokens": 150,
+  "n": 1,
+  "stop": null,
+  "temperature": 0.1
+}
