@@ -37,15 +37,16 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo"):
     num_tokens += 3  # every reply is primed with assistant
     return num_tokens
     
-def generate_text(prompt, model, history, params):
+def generate_text(prompt, model, history, params, history_file_path):
     messages = [{"role": "system", "content": "You are a helpful assistant."}]
     messages.extend(history)
     messages.append({"role": "user", "content": prompt})
 
     total_tokens = num_tokens_from_messages(messages, model)
-    while total_tokens > 4096:
-        messages.pop(0)
+    while total_tokens > 3048:
         print(total_tokens)
+
+        messages.pop(0)
         total_tokens = num_tokens_from_messages(messages, model)
 
     response = ChatCompletion.create(
@@ -54,7 +55,17 @@ def generate_text(prompt, model, history, params):
         **params
     )
 
-    return response.choices[0].message['content'].strip()
+    generated_text = response.choices[0].message['content'].strip()
+
+    if history_file_path:
+        with open(history_file_path, 'w', encoding='utf-8') as f:
+            history.append({"role": "user", "content": prompt})
+            history.append({"role": "assistant", "content": generated_text})
+            while num_tokens_from_messages(history, model) > 3048:
+                history.pop(0)
+            json.dump(history, f, ensure_ascii=False, indent=2)
+
+    return generated_text
 
 def main():
     parser = argparse.ArgumentParser()
@@ -92,7 +103,8 @@ def main():
     try:
         while True:
             prompt = input("You: ")
-            generated_text = generate_text(prompt, args.model, history, params)
+         #   generated_text = generate_text(prompt, args.model, history, params)
+            generated_text = generate_text(prompt, args.model, history, params, history_file_path)
 
             print(f"Assistant: {generated_text}")
 
