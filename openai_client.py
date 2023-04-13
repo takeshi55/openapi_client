@@ -40,6 +40,7 @@ def wait_input():
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
 def num_tokens_from_messages(messages, model="gpt-3.5-turbo"):
+    # See. https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
     """Returns the number of tokens used by a list of messages."""
     try:
         encoding = tiktoken.encoding_for_model(model)
