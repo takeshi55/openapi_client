@@ -6,6 +6,38 @@ import openai
 from openai import ChatCompletion
 import tiktoken
 from tiktoken.core import Encoding
+import sys
+import termios
+import tty
+
+def wait_input():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        input_str = ""
+        while True:
+            ch = sys.stdin.read(1)
+            if ch == '\x18': # CTRL-X Key
+                return input_str
+            elif ch == '\r': # Enter key
+                input_str += ch
+                sys.stdout.write(ch)
+                sys.stdout.write('\n')
+                sys.stdout.flush()
+            elif ch == '\x7f': # Back Space
+                if len(input_str) > 0:
+                    inpyt_str = input_str[:-1]
+                    sys.stdout.write("\b \b")
+                    sys.stdout.flush()
+            elif ch == '\x03': #Ctrl-C key
+                sys.exit(0)
+            else:
+                input_str += ch
+                sys.stdout.write(ch)
+                sys.stdout.flush()
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
 def num_tokens_from_messages(messages, model="gpt-3.5-turbo"):
     """Returns the number of tokens used by a list of messages."""
@@ -37,12 +69,12 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo"):
     return num_tokens
     
 def generate_text(prompt, model, history, params, history_file_path):
-    messages = [{"role": "system", "content": "You are a helpful assistant."}]
+    messages = [{"role": "system", "content": params["role_content"]}]
     messages.extend(history)
     messages.append({"role": "user", "content": prompt})
 
     total_tokens = num_tokens_from_messages(messages, model)
-    while total_tokens > 3048:
+    while total_tokens > params['max_history_tokens']:
         print("Token limit detected! Delete history..." + str(total_tokens))
 
         messages.pop(0)
@@ -51,7 +83,10 @@ def generate_text(prompt, model, history, params, history_file_path):
     response = ChatCompletion.create(
         model=model,
         messages=messages,
-        **params
+        max_tokens=params["max_tokens"],
+        n=params["n"],
+        stop=params["stop"],
+        temperature=params["temperature"]
     )
 
     generated_text = response.choices[0].message['content'].strip()
@@ -68,11 +103,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default="gpt-3.5-turbo", help='The OpenAI model to use')
     parser.add_argument('--history_file', default=None, help='The file to store conversation history')
+    parser.add_argument('--config_file', type=str, default='params.json', help='Path to JSON file containg parameters')  
     args = parser.parse_args()
 
     openai.api_key = os.environ["OPENAI_API_KEY"]
 
-    with open('config/params.json', 'r', encoding='utf-8') as f:
+    with open("config/"+args.config_file, 'r', encoding='utf-8') as f:
         params = json.load(f)
 
     history_file_path = None
@@ -95,14 +131,16 @@ def main():
     else:
         history = []
 
+    print("To Send the Message, press Ctrl+X.")
     print("To end the conversation, press Ctrl+C.")
 
     try:
         while True:
-            prompt = input("You: ")
+            print("You: ")
+            prompt = wait_input()
             generated_text = generate_text(prompt, args.model, history, params, history_file_path)
 
-            print(f"Assistant: {generated_text}")
+            print(f"\nAssistant:\n {generated_text}")
 
             history.append({"role": "user", "content": prompt})
             history.append({"role": "assistant", "content": generated_text})

@@ -1,6 +1,8 @@
 {
-  "max_tokens": 150,
+  "role_content" : "日本人向けのアシスタント。できるだけ箇条書きを使用します", 
+  "max_tokens": 1000,
   "n": 1,
   "stop": null,
-  "temperature": 0.1
+  "temperature": 0.1,
+  "max_history_tokens" : 3000
 }
