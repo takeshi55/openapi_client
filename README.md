@@ -1,29 +1,52 @@
-# 概要
+ # OpenAIチャットクライアント
 
-このスクリプトは、OpenAI APIを利用してGPT-3.5-turboモデルと対話するためのPythonプログラムです。
-
-## 必要なパッケージ
-
-```
-openai
-json
-os
-argparse
-datetime
-```
-
-## インストール方法
-Python 3.x がインストールされていることを確認してください。
-pip install openai で openai パッケージをインストールします。
+このコードは、OpenAI APIを使用してチャットボットを作成するためのものです。ユーザーが入力したテキストに対して、OpenAIのモデルを使用して応答を生成します。また、会話の履歴を保存することもできます。
 
 ## 使い方
-OpenAI APIキーを環境変数に設定してください。例: export OPENAI_API_KEY=your_api_key
-python3 openai_client.py を実行してください。会話を終了する場合は、Ctrl + Cを押して強制終了します。
 
-### オプション
---model: 使用するOpenAIモデルを指定します。デフォルトは "gpt-3.5-turbo" です。
---history_file: 会話履歴を保存するファイル名を指定します。存在しない場合は新しく作成されます。指定しない場合は、自動的に一意のファイル名が生成されます。
+1. `config/params.json`ファイルを編集して、使用するOpenAIモデルとその他のパラメータを設定します。
+2. `OPENAI_API_KEY`環境変数に、OpenAI APIのAPIキーを設定します。
+3. `python chatbot.py`を実行して、チャットボットを起動します。
+4. ユーザーが入力したテキストに対して、チャットボットが応答を生成します。
+5. `Ctrl+C`を押して、会話を終了します。
 
-### 注意
-このスクリプトは、OpenAI APIの利用に関連する費用が発生する場合があります。詳細については、OpenAIの料金表をご確認ください。
-会話中に生成されるテキストは、GPT-3.5-turboモデルが生成したものであり、必ずしも正確ではないことに注意してください。
+## 依存関係
+
+- OpenAI API
+- tiktoken
+- argparse
+- datetime
+- json
+- os
+- sys
+- termios
+- tty
+
+ ## 関数
+
+### `wait_input()`
+
+ユーザーからの入力を待ち、入力されたテキストを返します。`Ctrl+X`を押すと、入力されたテキストが返されます。
+
+### `num_tokens_from_messages(messages, model)`
+
+与えられたメッセージのリストから、使用されるトークンの数を計算して返します。使用するOpenAIモデルに応じて、トークン数の計算方法が異なります。
+
+### `generate_text(prompt, model, history, params, history_file_path)`
+
+与えられたプロンプトに対して、OpenAIモデルを使用して応答を生成します。また、会話の履歴を更新します。
+
+### `main()`
+
+コマンドライン引数を解析し、チャットボットを起動します。ユーザーからの入力を待ち、応答を生成します。また、会話の履歴を保存します。
+
+## コマンドライン引数
+
+- `--model`: 使用するOpenAIモデルを指定します。デフォルトは`gpt-3.5-turbo`です。
+- `--history_file`: 会話の履歴を保存するファイルのパスを指定します。
+- `--config_file`: パラメータを含むJSONファイルのパスを指定します。デフォルトは`params.json`です。
+
+## 注意事項
+
+- このコードを実行するには、OpenAI APIのAPIキーが必要です。
+- このコードは、Python 3で動作します。
